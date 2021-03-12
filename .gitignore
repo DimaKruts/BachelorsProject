@@ -107,3 +107,4 @@ dist
 swap.txt
 config.json
 package-lock.json
+users.json

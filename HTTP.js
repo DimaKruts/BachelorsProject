@@ -5,18 +5,19 @@ const config = require('./Configer')
 const app = express();
 
 app.use(compression());
-app.disable('x-powered-by');
+//app.disable('x-powered-by');
 app.set("view engine", "ejs");
+app.use(express.json({ extended: true }))
 app.use(express.static(__dirname + "/static"));
 
 if(config.read().HTTP.auth)
 {
-    //app.use();
+    app.use('/auth', require('./routes/auth.routes'));
 }
 
 app.get("/", function(request, response)
 {
-    response.send("<h2>Привет Express!</h2>");
+    response.render("auth");
 });
 // начинаем прослушивать подключения на 3000 порту
 app.listen(3000);

@@ -11,20 +11,24 @@ router.post(
     async (req, res) => {
     try 
     {
-      const { login, password} = req.body
-      const candidate = await User.findOne({ login })
+      const { login, password} = req.body;
+      let candidate = config.read('./users.json').find(element => element.login == login);
       if (candidate) 
       {
-        return res.status(400).json({ message: 'Такой пользователь уже существует' })
+        return res.status(400).json({ message: 'Такой пользователь уже существует' });
       }
       const hashedPassword = await bcrypt.hash(password, 12)
-      const user = new User({ email, password: hashedPassword })
-      await user.save()
-      res.status(201).json({ message: 'Пользователь создан' })
+      const user = { login, password: hashedPassword };
+      
+      let res = config.read('./users.json');
+      res.push(user);
+      config.write('./users.json', res);
+
+      res.status(201).json({ message: 'User created' });
     } 
     catch (e) 
     {
-      res.status(500).json({ message: 'Что-то пошло не так, попробуйте снова' })
+      res.status(500).json({ message: 'Something was wrong. Try later' });
     }
   })
 
@@ -35,14 +39,14 @@ router.post(
         try 
         {
             const { login, password } = req.body
-            const user = await User.findOne({ login })
+            const user = config.read('./users.json').find(element => element.login == login)
             if (!user) {
-                return res.status(400).json({ message: 'Пользователь не найден' })
+                return res.status(400).json({ message: 'Invalid login or password' })
             }
             const isMatch = await bcrypt.compare(password, user.password)
 
             if (!isMatch) {
-                return res.status(400).json({ message: 'Неверный пароль, попробуйте снова' })
+                return res.status(400).json({ message: 'Invalid login or password' })
             }
             const token = jwt.sign(
                 { userId: user.id },

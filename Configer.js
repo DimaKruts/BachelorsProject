@@ -11,7 +11,7 @@ module.exports.read = function(file = "config.json")
     catch (error) 
     {
         console.error(error);
-        throw error;
+        process.exit(1)
     }
 }
 module.exports.write = function(file = "config.json", content) 
@@ -24,7 +24,7 @@ module.exports.write = function(file = "config.json", content)
     catch (error) 
     {
         console.error(error);
-        throw error;
+        process.exit(1)
     }
 }
 
