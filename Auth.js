@@ -1,11 +1,11 @@
 const { Router } = require('express')
-const bcrypt = require('bcryptjs')
+//const bcrypt = require('bcryptjs')
 const config = require('./Configer')
 const jwt = require('jsonwebtoken')
 //const { check, validationResult } = require('express-validator')
 const router = Router()
 
-// /api/auth/register
+// /auth/register
 router.post(
     '/register',
     async (req, res) => {
@@ -32,18 +32,20 @@ router.post(
     }
   })
 
-// /api/auth/login
+// /auth/login
 router.post(
     '/login',
     async (req, res) => {
         try 
         {
             const { login, password } = req.body
+            console.log(req.body);
             const user = config.read('./users.json').find(element => element.login == login)
             if (!user) {
                 return res.status(400).json({ message: 'Invalid login or password' })
             }
-            const isMatch = await bcrypt.compare(password, user.password)
+            // const isMatch = await bcrypt.compare(password, user.password)
+            let isMatch = password == user.password;
 
             if (!isMatch) {
                 return res.status(400).json({ message: 'Invalid login or password' })
@@ -53,7 +55,7 @@ router.post(
                 'jwtSecret',
                 { expiresIn: '1h' }
             )
-            res.json({ token, userId: user.id })
+            res.json({ token })
         }
         catch (e) {
             res.status(500).json({ message: 'Something was wrong. Try later' })

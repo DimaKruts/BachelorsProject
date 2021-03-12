@@ -5,10 +5,19 @@
     <meta http-equiv='X-UA-Compatible' content='IE=edge'>
     <meta name='viewport' content='width=device-width, initial-scale=1'>
     <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/authStyle.css">
+    <link rel="shortcut icon" href="img/favicon.ico" />
     <title>Головна сторінка</title>
 </head>
 <body>
-    <h1>Hello Word</h1>
-    <script src='main.js'></script>
+    <form class="form" action="auth/login" method="post">
+        <label for="login">Введіть логін</label>
+        <input type="text", name="login"/>
+
+        <label for="password">Введіть пароль</label>
+        <input type="password", name="password"/>
+
+        <button type="submit">Ввійти</button>
+    </form>
 </body>
 </html>
