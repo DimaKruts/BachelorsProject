@@ -1,5 +1,7 @@
 const config = require('./Configer');
-const { weather } = require('./Weather')
+const { weather } = require('./Weather');
+// const mqtt = require('./MQTT');
+// const http = require('./HTTP');
 
 // config.read().then((value) => 
 // {
@@ -11,6 +13,6 @@ const { weather } = require('./Weather')
 // data.HTTP.auth = false;
 // console.log(data);
 // config.write("config.json", data);
-let res = config.read('./users.json');
-res.push({login:"user3", password:"qwer1234"});
-config.write('./users.json', res);
+
+//console.log();
+weather(1, 2);

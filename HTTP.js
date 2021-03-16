@@ -2,36 +2,38 @@ const compression = require('compression');
 const express = require("express");
 const config = require('./Configer');
 const bodyParser = require("body-parser");
+const {list} = require('./MQTT');
 
 const app = express();
 
 app.use(compression());
-//app.disable('x-powered-by');
-app.set("view engine", "ejs");
-app.use(bodyParser.json()) // for parsing application/json
-app.use(bodyParser.urlencoded({ extended: true }))
-app.use(express.static(__dirname + "/static"));
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
 
 if(config.read().HTTP.auth)
 {
     app.use('/auth', require('./Auth'));
 }
 
+app.get("/tariff", function(request, response)
+{
+    const tariff = 1.68;
+    // const multiplier = 1.5; 
+    const multiplier = Math.random() * 2;
+    let res = {tariff, multiplier, current:(tariff*multiplier).toFixed(2)};
+    response.send(res);
+});
+
 app.get("/data", function(request, response)
 {
-    let temp = 25.0 - 25.0 * Math.random();
-    response.send(`{"temp":${temp.toFixed(2)}}`);
+
+    let temp = [list.get("Room_room").temp, list.get("Room_room").temp + Math.random()];
+    response.send(temp);
 });
 
 app.get("/", function(request, response)
 {
-    response.render("index");
+    
 });
 
-app.get("/auth", function(request, response)
-{
-    response.render("auth");
-});
-
-// начинаем прослушивать подключения на 3000 порту
 app.listen(3000);
