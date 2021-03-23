@@ -39,7 +39,7 @@ router.post(
         try 
         {
             const { login, password } = req.body;
-            //console.log(req.body);
+            console.log(req.body);
             const user = config.read('./users.json').find(element => element.login == login)
             if (!user) 
             {

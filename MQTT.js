@@ -2,7 +2,6 @@ var mqtt = require('mqtt')
 const config = require('./Configer');
 const client  = mqtt.connect(config.read().MQTT);
 let list = new Map();
-module.exports.list = list;
 client.on('connect', function () 
 {
   client.subscribe('#', function (err) 
@@ -16,11 +15,10 @@ client.on('connect', function ()
 });
 client.on('message', function (topic, message) 
 {
+  const topics = config.read().Sources.inside;
   try 
   {
-    // let tmp = {...JSON.parse(message.toString(),};
-    // console.log(tmp);
-    list.set(topic.toString(), JSON.parse(message.toString()));
+    let tmp = {...JSON.parse(message.toString()), time: Date.now()};
   } 
   catch (error) 
   {

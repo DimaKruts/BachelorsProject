@@ -1,0 +1,18 @@
+{
+  "temp": [
+    { "time": 0, "hour": 0, "minute": 0, "temp": 18 },
+    { "time": 330, "hour": 5, "minute": 30, "temp": 21 },
+    { "time": 420, "hour": 7, "minute": 0, "temp": 16 },
+    { "time": 1020, "hour": 17, "minute": 0, "temp": 22 },
+    { "time": 1380, "hour": 23, "minute": 0, "temp": 19 }
+  ],
+  "multiplier": [
+    { "time": 0, "hour": 0, "minute": 0, "multiplier": 0.4 },
+    { "time": 420, "hour": 7, "minute": 0, "multiplier": 1 },
+    { "time": 480, "hour": 8, "minute": 0, "multiplier": 1.5 },
+    { "time": 660, "hour": 11, "minute": 0, "multiplier": 1 },
+    { "time": 1200, "hour": 20, "minute": 0, "multiplier": 1.5 },
+    { "time": 1320, "hour": 22, "minute": 0, "multiplier": 1 },
+    { "time": 1380, "hour": 23, "minute": 0, "multiplier": 0.4 }
+  ]
+}

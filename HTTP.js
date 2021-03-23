@@ -2,7 +2,7 @@ const compression = require('compression');
 const express = require("express");
 const config = require('./Configer');
 const bodyParser = require("body-parser");
-const {list} = require('./MQTT');
+const { grapficts, averageTemp } = require('./Math');
 
 const app = express();
 
@@ -26,9 +26,13 @@ app.get("/tariff", function(request, response)
 
 app.get("/data", function(request, response)
 {
-
-    let temp = [list.get("Room_room").temp, list.get("Room_room").temp + Math.random()];
+    let temp = [22.0, averageTemp()];
     response.send(temp);
+});
+
+app.get("/grapficts", function(request, response)
+{
+    response.send(grapficts);
 });
 
 app.get("/", function(request, response)
@@ -36,4 +40,4 @@ app.get("/", function(request, response)
     
 });
 
-app.listen(3000);
+app.listen(3001);
