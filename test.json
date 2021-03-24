@@ -1,0 +1,19 @@
+[
+  { "name": "19:30", "temp": 20.4, "tempSet": 21 },
+  { "name": "19:31", "temp": 20.6, "tempSet": 21 },
+  { "name": "19:32", "temp": 20.8, "tempSet": 21 },
+  { "name": "19:33", "temp": 21.0, "tempSet": 21 },
+  { "name": "19:34", "temp": 21.2, "tempSet": 21 },
+  { "name": "19:35", "temp": 21.4, "tempSet": 21 },
+  { "name": "19:36", "temp": 21.6, "tempSet": 21 },
+  { "name": "19:37", "temp": 21.4, "tempSet": 21 },
+  { "name": "19:38", "temp": 21.2, "tempSet": 21 },
+  { "name": "19:39", "temp": 20.8, "tempSet": 21 },
+  { "name": "19:40", "temp": 20.7, "tempSet": 21 },
+  { "name": "19:40", "temp": 20.8, "tempSet": 21 },
+  { "name": "19:41", "temp": 20.8, "tempSet": 21 },
+  { "name": "19:42", "temp": 20.8, "tempSet": 21 },
+  { "name": "19:43", "temp": 20.9, "tempSet": 21 },
+  { "name": "19:44", "temp": 20.8, "tempSet": 21 },
+  { "name": "19:45", "temp": 21.0, "tempSet": 21 }
+]

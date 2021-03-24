@@ -2,22 +2,22 @@ const jwt = require('jsonwebtoken')
 
 module.exports = (req, res, next) => {
   if (req.method === 'OPTIONS') {
-    return next()
+    return next();
   }
 
   try {
 
-    const token = req.headers.authorization.split(' ')[1] // "Bearer TOKEN"
+    const token = req.headers.authorization.split(' ')[1]; // "Bearer TOKEN"
 
     if (!token) {
-      return res.status(401).json({ message: 'No authorization' })
+      return res.status(401).json({ message: 'No authorization' });
     }
 
-    const decoded = jwt.verify(token, 'jwtSecret')
-    req.user = decoded
-    next()
+    const decoded = jwt.verify(token, 'jwtSecret');
+    req.user = decoded;
+    next();
 
   } catch (e) {
-    res.status(401).json({ message: 'No authorization' })
+    res.status(401).json({ message: 'No authorization' });
   }
 }

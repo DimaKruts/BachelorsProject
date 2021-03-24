@@ -2,7 +2,9 @@ const compression = require('compression');
 const express = require("express");
 const config = require('./Configer');
 const bodyParser = require("body-parser");
-const { grapficts, averageTemp } = require('./Math');
+const { grapfic, averageTemp } = require('./Math');
+const { getTemp } = require('./Timer');
+const MQTT = require('./MQTT');
 
 const app = express();
 
@@ -13,26 +15,24 @@ app.use(bodyParser.urlencoded({ extended: true }));
 if(config.read().HTTP.auth)
 {
     app.use('/auth', require('./Auth'));
+    app.use('/api', require('./auth.middleware'),require('./Routers'));
 }
-
-app.get("/tariff", function(request, response)
+else
 {
-    const tariff = 1.68;
-    // const multiplier = 1.5; 
-    const multiplier = Math.random() * 2;
-    let res = {tariff, multiplier, current:(tariff*multiplier).toFixed(2)};
-    response.send(res);
-});
+    app.use('/api', require('./Routers'));    
+};
 
 app.get("/data", function(request, response)
 {
-    let temp = [22.0, averageTemp()];
+    //let temp = [22.0, averageTemp()];
+    let temp = [getTemp(), averageTemp()];
     response.send(temp);
 });
 
-app.get("/grapficts", function(request, response)
+app.get("/grapfic", function(request, response)
 {
-    response.send(grapficts);
+    //response.send(grapfic());
+    response.send(require('./test.json'));
 });
 
 app.get("/", function(request, response)
@@ -40,4 +40,4 @@ app.get("/", function(request, response)
     
 });
 
-app.listen(3001);
+app.listen(3000);

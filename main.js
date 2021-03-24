@@ -1,12 +1,5 @@
 const config = require('./Configer');
-const { getTemp, AddTemp } = require('./Timer');
-// const mqtt = require('./MQTT');
-// const http = require('./HTTP');
-
-// config.read().then((value) => 
-// {
-//     console.log(value);
-// });
+const { getMultiplier, getTemp } = require('./Timer');
 
 // let data = config.read();
 // console.log(config.read().Sources);
@@ -17,5 +10,4 @@ const { getTemp, AddTemp } = require('./Timer');
 // console.log();
 // weather(data.Weather.key, data.Weather.id).then(data => console.log(data)).catch(e => console.log(e));
 
-AddTemp({time:1260, hour:21, minute:0, temp:23})
-
+console.log(getTemp());

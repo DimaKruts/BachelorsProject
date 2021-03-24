@@ -1,7 +1,7 @@
 let tempInside = new Map();
 let tempOutside = new Map();
-let voltege = new Map();
-let grapficts = [];
+let voltage = new Map();
+let grapfic = [];
 let time = 300;
 
 function filter(list)
@@ -34,13 +34,13 @@ function averageTemp(list)
     return sum / count;
 };
 
-module.exports.grapficts = function()
+module.exports.grapfic = function()
 {
-    return grapficts;
+    return grapfic;
 };
+module.exports.voltage = voltage;
 module.exports.tempInside = tempInside;
 module.exports.tempOutside = tempOutside;
-module.exports.voltege = voltege;
 module.exports.averageTemp = function()
 {
     return averageTemp(tempInside);
@@ -49,21 +49,21 @@ module.exports.averageTemp = function()
 
 setInterval(() =>
 {
+    voltage = filter(voltage);
     tempInside = filter(tempInside);
     tempOutside = filter(tempOutside);
-    voltege = filter(voltege);
 }, 10000);
 
 setInterval(() =>
 {
     let tempSet = 0;
     let temp = averageTemp(tempInside);
-    let time = new Date.now();
+    let time = new Date;
     let str = `${time.getHours()}:${time.getMinutes()}`;
     let tmp = { name:str, temp, tempSet };
-    grapficts.push(tmp);
-    if(grapficts.length > 60)
+    grapfic.push(tmp);
+    if(grapfic.length > 60)
     {
-        grapficts.shift();
+        grapfic.shift();
     }
 }, 60000);

@@ -1,5 +1,6 @@
 var mqtt = require('mqtt')
 const config = require('./Configer');
+const { tempInside, tempOutside } = require('./Math');
 const client  = mqtt.connect(config.read().MQTT);
 let list = new Map();
 client.on('connect', function () 
@@ -15,14 +16,23 @@ client.on('connect', function ()
 });
 client.on('message', function (topic, message) 
 {
-  const topics = config.read().Sources.inside;
-  try 
+  let topics = config.read().Sources.inside;
+  if(topics.find(element => element === topic.toString()))
   {
     let tmp = {...JSON.parse(message.toString()), time: Date.now()};
-  } 
-  catch (error) 
+    tempInside.set(topic.toString(), tmp);
+  }
+  topics = config.read().Sources.outside;
+  if(topics.find(element => element === topic.toString()))
   {
-    
+    let tmp = {...JSON.parse(message.toString()), time: Date.now()};
+    tempOutside.set(topic.toString(), tmp);
+  }
+  topics = config.read().Sources.voltage;
+  if(topics.find(element => element === topic.toString()))
+  {
+    let tmp = {...JSON.parse(message.toString()), time: Date.now()};
+    voltage.set(topic.toString(), tmp);
   }
 });
 
