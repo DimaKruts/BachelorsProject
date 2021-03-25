@@ -21,8 +21,15 @@ module.exports.NextMultiplier = function()
     let minute = time.getMinutes();
     let t = hour * 60 + minute;
     const list = config.read('time.json').multiplier;
+    if(t > list[list.length - 1].time) return list[0];
     let ind = list.findIndex(element => element.time >= t);
-    return list[ind - 1];
+    return list[ind];
+};
+module.exports.RemoveMultiplier = function(mult)
+{
+    let list = config.read('time.json');
+    list.multiplier = list.multiplier.filter(item => item.time  !== value.time );
+    config.write('time.json', list);
 };
 module.exports.setMultiplier = function (newArray) 
 {
@@ -64,6 +71,12 @@ module.exports.AddTemp = function(mult)
     list.temp.sort((a, b) => a.time - b.time);
     config.write('time.json', list);
 };
+module.exports.RemoveTemp = function(mult)
+{
+    let list = config.read('time.json');
+    list.temp = list.temp.filter(item => item.time  !== value.time );
+    config.write('time.json', list);
+};
 module.exports.NextTemp = function()
 {
     let time = new Date;
@@ -71,6 +84,7 @@ module.exports.NextTemp = function()
     let minute = time.getMinutes();
     let t = hour * 60 + minute;
     const list = config.read('time.json').temp;
+    if(t > list[list.length - 1].time) return list[0];
     let ind = list.findIndex(element => element.time >= t);
-    return list[ind - 1];
+    return list[ind];
 };

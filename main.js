@@ -1,5 +1,8 @@
 const config = require('./Configer');
-const { getMultiplier, getTemp } = require('./Timer');
+const {NextMultiplier, getMultiplier} = require('./Timer');
+
+console.log("Currnt", getMultiplier());
+console.log("Netx", NextMultiplier());
 
 // let data = config.read();
 // console.log(config.read().Sources);
@@ -9,5 +12,4 @@ const { getMultiplier, getTemp } = require('./Timer');
 
 // console.log();
 // weather(data.Weather.key, data.Weather.id).then(data => console.log(data)).catch(e => console.log(e));
-
-console.log(getTemp());
+// curl -H "Content-Type: application/json" -d '{"tariff": 1.7}' 127.0.1:3000/api/tariff

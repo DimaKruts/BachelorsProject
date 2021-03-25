@@ -44,8 +44,34 @@ module.exports.tempOutside = tempOutside;
 module.exports.averageTemp = function()
 {
     return averageTemp(tempInside);
-} 
+};
+
+function constrain(input, minOut, maxOut)
+{
+    if(input > maxOut) return maxOut;
+    if(input < minOut) return minOut;
+    return input;
+}
+
+let integral = 0, prevErr = 0;
+function computePID(input, setpoint, kp, ki, kd, dt, minOut, maxOut) 
+{
+    err = setpoint - input;
+    integral = 0, prevErr = 0;
+    integral = constrain(integral + err * dt * ki, minOut, maxOut);
+    D = (err - prevErr) / dt;
+    prevErr = err;
+    return constrain(err * kp + integral + D * kd, minOut, maxOut);
+};
+
+module.exports.computePID = computePID;
+module.exports.constrain = constrain;
     
+
+setInterval(() =>
+{
+    
+}, 30000);
 
 setInterval(() =>
 {

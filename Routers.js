@@ -16,13 +16,43 @@ router.get('/temp', function(request, response)
 // /api/addTemp
 router.post('/addTemp', function(request, response)
 {
-    console.log(request.body);
+    let {time, hour, minute, temp} = request.body;
+    if(!temp) response.sendStatus(406);
+    if(time) 
+    {
+        if(!(hour && minute))
+        {
+            minute = time % 60;
+            hour = (time - minute) / 60;
+        }
+    }
+    else if(!(hour && minute))
+    {
+        time = hour * 60 + minute;
+    }
+    else response.sendStatus(406);
+    timer.AddTemp({time, hour, minute, temp});
     response.sendStatus(202);
 });
 // /api/delTemp
-router.delete('/delTemp', function(request, response)
+router.post('/delTemp', function(request, response)
 {
-    console.log(request.body);
+    let {time, hour, minute, temp} = request.body;
+    if(!temp) response.sendStatus(406);
+    if(time) 
+    {
+        if(!(hour && minute))
+        {
+            minute = time % 60;
+            hour = (time - minute) / 60;
+        }
+    }
+    else if(!(hour && minute))
+    {
+        time = hour * 60 + minute;
+    }
+    else response.sendStatus(406);
+    timer.RemoveTemp({time, hour, minute, temp});
     response.sendStatus(202);
 });
 // /api/getCurretnMultiplier
@@ -38,13 +68,43 @@ router.get('/multiplier', function(request, response)
 // /api/addMultiplier
 router.post('/addMultiplier', function(request, response)
 {
-    console.log(request.body);
+    let {time, hour, minute, multiplier} = request.body;
+    if(!multiplier) response.sendStatus(406);
+    if(time) 
+    {
+        if(!(hour && minute))
+        {
+            minute = time % 60;
+            hour = (time - minute) / 60;
+        }
+    }
+    else if(!(hour && minute))
+    {
+        time = hour * 60 + minute;
+    }
+    else response.sendStatus(406);
+    timer.AddMultiplier({time, hour, minute, multiplier});
     response.sendStatus(202);
 });
 // /api/delMultiplier
-router.delete('/delMultiplier', function(request, response)
+router.post('/delMultiplier', function(request, response)
 {
-    console.log(request.body);
+    let {time, hour, minute, temp} = request.body;
+    if(!temp) response.sendStatus(406);
+    if(time) 
+    {
+        if(!(hour && minute))
+        {
+            minute = time % 60;
+            hour = (time - minute) / 60;
+        }
+    }
+    else if(!(hour && minute))
+    {
+        time = hour * 60 + minute;
+    }
+    else response.sendStatus(406);
+    timer.RemoveMultiplier({time, hour, minute, temp});
     response.sendStatus(202);
 });
 // /api/mqtt
@@ -59,7 +119,7 @@ router.post('/addMqtt', function(request, response)
     response.sendStatus(202);
 });
 // /api/delMultiplier
-router.delete('/delMqtt', function(request, response)
+router.post('/delMqtt', function(request, response)
 {
     console.log(request.body);
     response.sendStatus(202);
@@ -73,13 +133,16 @@ router.get("/tariff", function(request, response)
     response.send(res);
 });
 // /api/tariff
-router.get("/mqtt", function(request, response)
+router.post("/tariff", function(request, response)
 {
-    const tariff = config.read().Other.tariff;
-    const multiplier = timer.getMultiplier();
-    let res = {tariff, multiplier, current:(tariff*multiplier).toFixed(2)};
-    response.send(res);
+    let {tariff} = request.body;
+    if(!tariff) response.sendStatus(406);
+    let conf = config.read();
+    conf.Other.tariff = tariff;
+    config.write("config.json", conf);
+    response.sendStatus(202);
 });
+
 
 
 module.exports = router;
