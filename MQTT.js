@@ -16,20 +16,20 @@ client.on('connect', function ()
 });
 client.on('message', function (topic, message) 
 {
-  let topics = config.read().Sources.inside;
-  if(topics.find(element => element === topic.toString()))
+  let topics = config.read('./mqtt.json').inside;
+  if(topics.find(element => element.topic === topic.toString()))
   {
     let tmp = {...JSON.parse(message.toString()), time: Date.now()};
     tempInside.set(topic.toString(), tmp);
   }
-  topics = config.read().Sources.outside;
-  if(topics.find(element => element === topic.toString()))
+  topics = config.read('./mqtt.json').outside;
+  if(topics.find(element => element.topic === topic.toString()))
   {
     let tmp = {...JSON.parse(message.toString()), time: Date.now()};
     tempOutside.set(topic.toString(), tmp);
   }
-  topics = config.read().Sources.voltage;
-  if(topics.find(element => element === topic.toString()))
+  topics = config.read('./mqtt.json').voltage;
+  if(topics.find(element => element.topic === topic.toString()))
   {
     let tmp = {...JSON.parse(message.toString()), time: Date.now()};
     voltage.set(topic.toString(), tmp);

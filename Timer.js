@@ -88,3 +88,11 @@ module.exports.NextTemp = function()
     let ind = list.findIndex(element => element.time >= t);
     return list[ind];
 };
+module.exports.Time = function()
+{
+    let time = new Date;
+    let hour = time.getHours();
+    let minute = time.getMinutes();
+    let t = hour * 60 + minute;
+    return t;
+};

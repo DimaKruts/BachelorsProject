@@ -1,3 +1,5 @@
+const {weather} = require('./Weather');
+const config = require('./Configer').read();
 let tempInside = new Map();
 let tempOutside = new Map();
 let voltage = new Map();
@@ -11,7 +13,7 @@ function filter(list)
         let tmp = list.get(k);
         if((Date.now() - tmp.time) > (time * 1000))
         {
-            list.delet(k);
+            list.delete(k);
         };
     };
     return list;
@@ -21,6 +23,7 @@ function averageTemp(list)
 {
     let count = list.size;
     let sum = 0
+    if(count == 0) return 0;
     try 
     {
         list.forEach(element => {
@@ -34,6 +37,21 @@ function averageTemp(list)
     return sum / count;
 };
 
+function clear()
+{    
+    voltage = filter(voltage);
+    tempInside = filter(tempInside);
+    tempOutside = filter(tempOutside);
+    if(voltage.size == 0)
+    {
+        voltage.set("defaut", {voltage:config.Other.voltage, time: Date.now()});
+    }
+    if(tempOutside.size == 0)
+    {
+        weather(config.Weather).then(data => tempOutside.set("OWM", {...data, time: Date.now()})).catch(e => console.log(e));
+    }
+};
+
 module.exports.grapfic = function()
 {
     return grapfic;
@@ -41,9 +59,17 @@ module.exports.grapfic = function()
 module.exports.voltage = voltage;
 module.exports.tempInside = tempInside;
 module.exports.tempOutside = tempOutside;
-module.exports.averageTemp = function()
+module.exports.averageTempIn = function()
 {
     return averageTemp(tempInside);
+};
+module.exports.averageTempOut = function()
+{
+    return averageTemp(tempOutside);
+};
+module.exports.averageVoltage = function()
+{
+    return config.Other.voltage;
 };
 
 function constrain(input, minOut, maxOut)
@@ -72,13 +98,8 @@ setInterval(() =>
 {
     
 }, 30000);
-
-setInterval(() =>
-{
-    voltage = filter(voltage);
-    tempInside = filter(tempInside);
-    tempOutside = filter(tempOutside);
-}, 10000);
+clear();
+setInterval(clear, time * 1000);
 
 setInterval(() =>
 {

@@ -1,13 +1,9 @@
 const { Router } = require('express');
 const timer = require('./Timer');
 const config = require('./Configer');
+const { v4: uuidv4 } = require('uuid');
 
 const router = Router();
-// /api/getCurretnTemp
-router.get('/getCurretnTemp', function(request, response)
-{  
-    response.send({temp:timer.getTemp()});
-});
 // /api/temp
 router.get('/temp', function(request, response)
 {  
@@ -32,7 +28,13 @@ router.post('/addTemp', function(request, response)
     }
     else response.sendStatus(406);
     timer.AddTemp({time, hour, minute, temp});
-    response.sendStatus(202);
+    response.sendStatus(200);
+});
+// /api/addTemps
+router.post('/addTemps', function(request, response)
+{
+    timer.setTemp(request.body);
+    response.sendStatus(200);
 });
 // /api/delTemp
 router.post('/delTemp', function(request, response)
@@ -53,12 +55,7 @@ router.post('/delTemp', function(request, response)
     }
     else response.sendStatus(406);
     timer.RemoveTemp({time, hour, minute, temp});
-    response.sendStatus(202);
-});
-// /api/getCurretnMultiplier
-router.get('/getCurretnMultiplier', function(request, response)
-{  
-    response.send({multiplier:timer.getMultiplier()});
+    response.sendStatus(200);
 });
 // /api/multiplier
 router.get('/multiplier', function(request, response)
@@ -84,6 +81,12 @@ router.post('/addMultiplier', function(request, response)
     }
     else response.sendStatus(406);
     timer.AddMultiplier({time, hour, minute, multiplier});
+    response.sendStatus(200);
+});
+// /api/addMultiplier
+router.post('/addMultipliers', function(request, response)
+{
+    timer.setMultiplier(request.body);
     response.sendStatus(202);
 });
 // /api/delMultiplier
@@ -110,27 +113,100 @@ router.post('/delMultiplier', function(request, response)
 // /api/mqtt
 router.get('/mqtt', function(request, response)
 {  
-    response.send(config.read().Sources);
+    let mqtt = config.read('./mqtt.json');
+    let res = [];
+    mqtt.inside.forEach(element => {
+        res.push({...element, id: uuidv4(), group:1});
+    });
+    mqtt.outside.forEach(element => {
+        res.push({...element, id: uuidv4(), group:2});
+    });
+    mqtt.voltage.forEach(element => {
+        res.push({...element, id: uuidv4(), group:3});
+    });
+    response.send(res);
 });
 // /api/addMqtt
 router.post('/addMqtt', function(request, response)
 {
-    console.log(request.body);
-    response.sendStatus(202);
+    // console.log(request.body);
+    const {topic, group, json} = request.body;
+    let mqtt = config.read('./mqtt.json');
+    if(group == 1)
+    {
+        if(mqtt.inside.find(element => element.topic == topic)) 
+        {
+            response.sendStatus(409);
+            return;
+        }
+        mqtt.inside.push({topic, json});
+        config.write('./mqtt.json', mqtt);
+    } 
+    else if(group == 2)
+    {
+        if(mqtt.outside.find(element => element.topic == topic)) 
+        {
+            response.sendStatus(409);
+            return;
+        }
+        mqtt.outside.push({topic, json});
+        config.write('./mqtt.json', mqtt);
+    }
+    else if(group == 3)
+    {
+        if(mqtt.voltage.find(element => element.topic == topic)) 
+        {
+            response.sendStatus(409);
+            return;
+        }
+        mqtt.voltage.push({topic, json});
+        config.write('./mqtt.json', mqtt);
+    }
+    else response.sendStatus(418);
+    response.sendStatus(200);
+});
+// /api/addMqtts
+router.post('/addMqtts', function(request, response)
+{
+    let mqtt = config.read('./mqtt.json');
+    mqtt.inside = [];
+    mqtt.outside = [];
+    mqtt.voltage = [];
+    request.body.forEach(elements => {
+        const { topic, group, json } = elements;
+        if (group == 1) {
+                mqtt.inside.push({ topic, json });
+        }
+        else if (group == 2) {
+                mqtt.outside.push({ topic, json });
+        }
+        else if (group == 3) {
+                mqtt.voltage.push({ topic, json });
+        }
+    });
+    config.write('./mqtt.json', mqtt);
+    response.sendStatus(200);
 });
 // /api/delMultiplier
 router.post('/delMqtt', function(request, response)
 {
-    console.log(request.body);
-    response.sendStatus(202);
-});
-// /api/tariff
-router.get("/tariff", function(request, response)
-{
-    const tariff = config.read().Other.tariff;
-    const multiplier = timer.getMultiplier();
-    let res = {tariff, multiplier, current:(tariff*multiplier).toFixed(2)};
-    response.send(res);
+    const {topic, group } = request.body;
+    let mqtt = config.read('./mqtt.json');
+    if(group == 1)
+    {
+        mqtt.inside = mqtt.inside.filter(item => item.topic  !== topic );
+    } 
+    else if(group == 2)
+    {
+        mqtt.outside = mqtt.outside.filter(item => item.topic  !== topic );
+    }
+    else if(group == 3)
+    {
+        mqtt.voltage = mqtt.voltage.filter(item => item.topic  !== topic );
+    }
+    else response.sendStatus(418);
+    config.write('./mqtt.json', mqtt);
+    response.sendStatus(200);
 });
 // /api/tariff
 router.post("/tariff", function(request, response)

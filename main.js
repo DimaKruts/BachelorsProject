@@ -1,15 +1,44 @@
+const HTTP = require('./HTTP');
+const MQTT = require('./MQTT');
+const math = require('./Math');
+const Timer = require('./Timer');
 const config = require('./Configer');
-const {NextMultiplier, getMultiplier} = require('./Timer');
 
-console.log("Currnt", getMultiplier());
-console.log("Netx", NextMultiplier());
+const {min, max} = config.read().Other.power;
 
-// let data = config.read();
-// console.log(config.read().Sources);
-// data.HTTP.auth = false;
-// console.log(data);
-// config.write("config.json", data);
+function main()
+{
+    let tariff = Timer.getMultiplier();
+    let nextTariff = Timer.NextMultiplier();
+    
+    let tempIn = math.averageTempIn();
+    let tempOut = math.averageTempOut();
+    let temtSet = Timer.getTemp();
+    let tempSN = Timer.NextTemp();
+    
+    let { kp, ki, kd, speed } = config.read('./math.json');
+    let speedHeat = speed.heat;  //*C/min
+    let speedCold = speed.cold //*C/min
 
-// console.log();
-// weather(data.Weather.key, data.Weather.id).then(data => console.log(data)).catch(e => console.log(e));
-// curl -H "Content-Type: application/json" -d '{"tariff": 1.7}' 127.0.1:3000/api/tariff
+    let time = Timer.Time();
+    
+    // console.log({tariff, nextTariff, tempIn, tempOut, temtSet, tempSN});
+    // console.log({max, min, kp, ki, kd, speedHeat, speedCold });
+
+    if(tempSN.temp > temtSet)
+    {
+        let needTime = Number((tempSN.temp - temtSet) / speed.heat);
+        // console.log(needTime);
+        if(time + needTime > tempSN.time)
+        {
+            temtSet = tempSN.temp;
+        }
+    }
+    let power = math.computePID(tempIn, tempSN, kp, ki, kd, 30000, min, max);
+
+    MQTT.publish("heater", JSON.stringify({power}));
+
+}
+
+main();
+setInterval(main, 30000);
